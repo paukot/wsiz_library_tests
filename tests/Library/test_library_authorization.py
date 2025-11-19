@@ -78,6 +78,17 @@ class TestLibraryAuthorization(BaseLibraryTestCase):
         assert self.URLS.get('login') in driver.current_url, 'User did not stay on login page'
         assert not self.is_user_logged_in(driver), 'User authentication cookies found'
 
+    def test_user_can_log_out(self, driver):
+        self.login_user(driver)
+
+        user_logged_in_before_logout = self.is_user_logged_in(driver)
+
+        driver.get(self.URLS.get('logout'))
+
+        assert user_logged_in_before_logout, 'User was not logged in before logout'
+        assert self.URLS.get('home') in driver.current_url, 'User was not redirected to home page'
+        assert not self.is_user_logged_in(driver), 'User authentication cookies found'
+
     def test_user_is_prompted_to_enter_captcha_after_repeated_failed_logins(self, driver):
         driver.get(self.URLS.get('login'))
 
@@ -120,17 +131,6 @@ class TestLibraryAuthorization(BaseLibraryTestCase):
         assert first_captcha_img_is_loaded, 'Captcha image was not loaded correctly'
         assert second_captcha_img_is_loaded, 'Captcha image was not loaded correctly'
         assert first_captcha_img_url != second_captcha_img_url, 'Captcha image was not refreshed'
-
-    def test_user_can_log_out(self, driver):
-        self.login_user(driver)
-
-        user_logged_in_before_logout = self.is_user_logged_in(driver)
-
-        driver.get(self.URLS.get('logout'))
-
-        assert user_logged_in_before_logout, 'User was not logged in before logout'
-        assert self.URLS.get('home') in driver.current_url, 'User was not redirected to home page'
-        assert not self.is_user_logged_in(driver), 'User authentication cookies found'
 
     def test_captcha_is_generated(self, driver):
         headers = {

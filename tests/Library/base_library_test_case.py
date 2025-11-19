@@ -1,7 +1,5 @@
-import pytest
-from abc import ABC, abstractmethod
-from dotenv import load_dotenv
 import os
+from abc import ABC
 
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
@@ -19,6 +17,9 @@ class BaseLibraryTestCase(ABC):
         'dashboard': 'https://biblioteka.wsiz.edu.pl/integro/authorization/userAttention',
         'captcha': 'https://biblioteka.wsiz.edu.pl/integro/authorization/captcha',
         'book_listing': 'https://biblioteka.wsiz.edu.pl/integro/search/description',
+        'reader_card': 'https://biblioteka.wsiz.edu.pl/integro/barcode/usercard',
+        'bookshelf': 'https://biblioteka.wsiz.edu.pl/integro/bookshelf',
+        'book_page': 'https://biblioteka.wsiz.edu.pl/integro/{book_id}',
     }
 
     CREDENTIALS = {}
@@ -44,7 +45,7 @@ class BaseLibraryTestCase(ABC):
     def wait_for_captcha_to_be_filled_if_present(self, driver):
         try:
             WebDriverWait(driver, self.TIMEOUT / 2) \
-                .until(EC.presence_of_element_located((By.ID, self.AUTH_FIELDS.get('captcha_input'))))
+                .until(EC.presence_of_element_located((By.ID, 'LoginForm_verifyCode')))
 
             WebDriverWait(driver, self.TIMEOUT * 30).until(EC.url_to_be(self.URLS.get('dashboard')))
 
