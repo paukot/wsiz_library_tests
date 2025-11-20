@@ -27,6 +27,7 @@ class TestLibraryAuthorization(BaseLibraryTestCase):
         return el.get_attribute('value')
 
     def test_user_can_log_in(self, driver):
+        self.logout_user(driver)
         driver.get(self.URLS.get('login'))
 
         expected_login = self.CREDENTIALS.get('login')
@@ -54,6 +55,7 @@ class TestLibraryAuthorization(BaseLibraryTestCase):
         ]
     )
     def test_user_cannot_log_in_with_wrong_credentials(self, driver, expected_login, expected_password):
+        self.logout_user(driver)
         driver.get(self.URLS.get('login'))
 
         expected_login = os.getenv(expected_login, expected_login)
@@ -90,6 +92,7 @@ class TestLibraryAuthorization(BaseLibraryTestCase):
         assert not self.is_user_logged_in(driver), 'User authentication cookies found'
 
     def test_user_is_prompted_to_enter_captcha_after_repeated_failed_logins(self, driver):
+        self.logout_user(driver)
         driver.get(self.URLS.get('login'))
 
         self.element_send_keys_and_get_value(driver, self.AUTH_FIELDS.get('login'), 'test123')
