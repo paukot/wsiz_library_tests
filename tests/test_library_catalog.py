@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from tests.Library.base_library_test_case import BaseLibraryTestCase
+from tests.base_library_test_case import BaseLibraryTestCase
 
 
 class TestLibraryAuthorization(BaseLibraryTestCase):
@@ -265,8 +265,12 @@ class TestLibraryAuthorization(BaseLibraryTestCase):
             (By.CSS_SELECTOR, f'{book_article_css} .action-flags li[data-bookbag-icon="bookbag-icon"]')))
 
         driver.get(self.URLS.get('bookshelf'))
-        book = WebDriverWait(driver, self.TIMEOUT) \
-            .until(EC.visibility_of_element_located((By.CSS_SELECTOR, book_bookshelf_article_css)))
+        try:
+            book = WebDriverWait(driver, self.TIMEOUT) \
+                .until(EC.visibility_of_element_located((By.CSS_SELECTOR, book_bookshelf_article_css)))
+        except TimeoutException:
+            book = None
 
         assert notification_is_displayed, 'Notification was not displayed'
-        assert book.is_displayed(), 'Book was is not in the bookshelf'
+        assert book is not None, 'Book article was not found'
+        assert book.is_displayed(), 'Book is not displayed on the bookshelf'

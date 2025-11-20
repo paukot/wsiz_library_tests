@@ -20,6 +20,8 @@ class BaseLibraryTestCase(ABC):
         'reader_card': 'https://biblioteka.wsiz.edu.pl/integro/barcode/usercard',
         'bookshelf': 'https://biblioteka.wsiz.edu.pl/integro/bookshelf',
         'book_page': 'https://biblioteka.wsiz.edu.pl/integro/{book_id}',
+        'userdata': 'https://biblioteka.wsiz.edu.pl/integro/userprofile/content/userdata',
+        'userdata_prompt': 'https://biblioteka.wsiz.edu.pl/integro/userprofile/authentication/password',
     }
 
     CREDENTIALS = {}
@@ -28,8 +30,6 @@ class BaseLibraryTestCase(ABC):
         self.CREDENTIALS.update({
             'login': os.getenv('STUDENT_LOGIN'),
             'password': os.getenv('STUDENT_PASSWORD'),
-            'azure_login': os.getenv('STUDENT_AZURE_LOGIN'),
-            'azure_password': os.getenv('STUDENT_AZURE_PASSWORD'),
         })
 
     def wait_for_cookie(self, driver, name, timeout=5):
@@ -53,6 +53,9 @@ class BaseLibraryTestCase(ABC):
             pass
 
     def login_user(self, driver):
+        if self.is_user_logged_in(driver):
+            return
+
         driver.get(self.URLS.get('login'))
 
         WebDriverWait(driver, 10) \
@@ -70,3 +73,6 @@ class BaseLibraryTestCase(ABC):
         self.wait_for_captcha_to_be_filled_if_present(driver)
 
         self.is_user_logged_in(driver)
+
+    def logout_user(self, driver):
+        driver.get(self.URLS.get('logout'))
