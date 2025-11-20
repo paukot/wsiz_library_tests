@@ -294,6 +294,3 @@ class TestLibraryAuthorization(BaseLibraryTestCase):
         assert self.is_user_logged_in(driver), 'User is not logged in'
         assert tag_id in driver.current_url, 'Tag ID was not found in URL'
         assert driver.current_url == tag_url, 'User was not properly redirected to filtered by tag page'
-
-
-
